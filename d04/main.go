@@ -34,7 +34,21 @@ func main() {
 		grid = append(grid, row)
 	}
 
-	// numAccessible := 0
+	numAccessible := 0
+
+	for i := range grid {
+		for j := range grid[i] {
+			if !grid[i][j] {
+				continue
+			}
+
+			numAdj := numAdj(grid, i, j)
+
+			if numAdj < 4 {
+				numAccessible++
+			}
+		}
+	}
 
 	numRemovable := 0
 	removable := true
@@ -48,62 +62,9 @@ func main() {
 					continue
 				}
 
-				numAdj := 0
-
-				// row above
-				if i > 0 {
-					if j > 0 {
-						if grid[i-1][j-1] {
-							numAdj++
-						}
-					}
-
-					if grid[i-1][j] {
-						numAdj++
-					}
-
-					if j < len(grid[i-1])-1 {
-						if grid[i-1][j+1] {
-							numAdj++
-						}
-					}
-				}
-
-				// same row
-				if j > 0 {
-					if grid[i][j-1] {
-						numAdj++
-					}
-				}
-
-				if j < len(grid[i])-1 {
-					if grid[i][j+1] {
-						numAdj++
-					}
-				}
-
-				// row below
-				if i < len(grid)-1 {
-					if j > 0 {
-						if grid[i+1][j-1] {
-							numAdj++
-						}
-					}
-
-					if grid[i+1][j] {
-						numAdj++
-					}
-
-					if j < len(grid[i+1])-1 {
-						if grid[i+1][j+1] {
-							numAdj++
-						}
-					}
-				}
+				numAdj := numAdj(grid, i, j)
 
 				if numAdj < 4 {
-					// numAccessible++
-
 					numRemovable++
 					grid[i][j] = false
 					removable = true
@@ -117,5 +78,63 @@ func main() {
 		log.Fatalf("Scanner error: %v", err)
 	}
 
+	fmt.Println(numAccessible)
 	fmt.Println(numRemovable)
+}
+
+func numAdj(grid [][]bool, i, j int) uint {
+	numAdj := uint(0)
+
+	// row above
+	if i > 0 {
+		if j > 0 {
+			if grid[i-1][j-1] {
+				numAdj++
+			}
+		}
+
+		if grid[i-1][j] {
+			numAdj++
+		}
+
+		if j < len(grid[i-1])-1 {
+			if grid[i-1][j+1] {
+				numAdj++
+			}
+		}
+	}
+
+	// same row
+	if j > 0 {
+		if grid[i][j-1] {
+			numAdj++
+		}
+	}
+
+	if j < len(grid[i])-1 {
+		if grid[i][j+1] {
+			numAdj++
+		}
+	}
+
+	// row below
+	if i < len(grid)-1 {
+		if j > 0 {
+			if grid[i+1][j-1] {
+				numAdj++
+			}
+		}
+
+		if grid[i+1][j] {
+			numAdj++
+		}
+
+		if j < len(grid[i+1])-1 {
+			if grid[i+1][j+1] {
+				numAdj++
+			}
+		}
+	}
+
+	return numAdj
 }
